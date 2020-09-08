@@ -21,84 +21,98 @@ function handleFiles() {
     return result;
   }).then(function (result) {
     return result.data.reduce(function (acc, currentLine) {
-      var emplacement = "emplacement usuel";
+      var emplacement = "loc actu";
       //No emplacement, we let the element as is
-      if (!currentLine[emplacement]) {
-        acc.push(currentLine);
+      currentLine.emplacement = currentLine[emplacement];
+      if (currentLine.emplacement === undefined) {
         return acc;
       }
-      //Split emplacement
-      var emplacement = currentLine[emplacement].split(") + ");
-      emplacement.forEach(function (currentEmplacement) {
-        if (!currentEmplacement) {
-          return;
-        }
-        var newLine = JSON.parse(JSON.stringify(currentLine));
-        newLine.emplacement = currentEmplacement;
-        acc.push(newLine);
-      });
+      acc.push(currentLine);
       return acc;
     }, []);
   }).then(function (splittedList) {
     return splittedList.reduce(function (acc, currentLine) {
-      var splitExp = /(FRAC-R\d*)-*([\d\w-]*)[ \(]*([^\/]*)\/*(.*)/;
+      //Detect if multiple loc
+      console.log(currentLine.emplacement);
+      if (currentLine.emplacement.indexOf(")  + ") > -1) {
+        currentLine.reserve = "multiloc";
+        currentLine.loc = currentLine.emplacement;
+        acc.push(currentLine);
+        return acc;
+      }
+      var splitExp = /(FRAC-R\d+).*/;
       if (!currentLine.emplacement) {
-        //acc.push(currentLine);
+        acc.push(currentLine);
         return acc;
       }
       //Split emplacement
       var result = splitExp.exec(currentLine.emplacement);
       if (result === null) {
+        console.log("échec regexp", currentLine);
+        currentLine.reserve = "extérieur";
         acc.push(currentLine);
         return acc;
       }
       currentLine.reserve = result[1] || "";
-      currentLine.loc = result[2] || "";
-      currentLine.priorite = result[3] || "";
-      currentLine.conditionnement = result[4] || "";
       acc.push(currentLine);
       return acc;
     }, []);
   }).then(function (analyzedArray) {
-    return analyzedArray.sort(function (first, second) {
-      var reserveFirst = (first.reserve ? first.reserve.toUpperCase() : "ø")+""+(first.loc ? first.loc.toUpperCase() : "ø");
-      var reserveSecond = (second.reserve ? second.reserve.toUpperCase() : "ø")+""+(second.loc ? second.loc.toUpperCase() : "ø");
-      if (reserveFirst > reserveSecond) {
-        return 1;
+    return analyzedArray.reduce(function (acc, currentLine) {
+      if (currentLine.reserve === "extérieur") {
+        acc.tableExt.push(currentLine);
       }
-      if (reserveFirst < reserveSecond) {
-        return -1;
+      if (currentLine.reserve === "FRAC-R1") {
+        acc.tableR1.push(currentLine);
       }
-      return 0;
-    })
+      if (currentLine.reserve === "FRAC-R2") {
+        acc.tableR2.push(currentLine);
+      }
+      if (currentLine.reserve === "FRAC-R3") {
+        acc.tableR3.push(currentLine);
+      }
+      if (currentLine.reserve === "FRAC-R4") {
+        acc.tableR4.push(currentLine);
+      }
+      if (currentLine.reserve === "multiloc") {
+        acc.tableMultiloc.push(currentLine);
+      }
+      return acc;
+    }, {
+      "tableExt": [],
+      "tableR1": [],
+      "tableR2": [],
+      "tableR3": [],
+      "tableR4": [],
+      "tableMultiloc": []
+    });
   }).then(function (finalList) {
-    var asHTML = finalList.reduce(function (acc, currentLine) {
-      if (!currentLine["conditionnement"]) {
-        console.log("excluded", currentLine);
-        return acc;
-      }
-      currentLine["conditionnement"] = currentLine["conditionnement"].replace(/\)$/, '');
-      var locActu = /FRAC-R.*/.test(currentLine["loc actu"]) ? "" : currentLine["loc actu"];
-      return acc +
-        "\n" +
-        "<tr>" +
-        "<td>" + (currentLine["Auteur(s)"] || "") + "</td>" +
-        "<td>" + (currentLine["Titre"] || "") + "</td>" +
-        "<td>" + (currentLine["Date"] || "") + "</td>" +
-        "<td>" + (currentLine["n° inv."] || "") + "</td>" +
-        "<td>" + (currentLine["priorite"] || "") + "</td>" +
-        "<td>" + (currentLine["reserve"] || "") + "</td>" +
-        "<td>" + (currentLine["loc"] || "") + "</td>" +
-        "<td>" + (currentLine["conditionnement"] || "") + "</td>" +
-        //"<td>"+(currentLine["emplacement usuel"] || "")+"</td>"+
-        //"<td class=\"noPrint\">"+(currentLine["loc actu"] || "")+"</td>"+
-        "<td>" + (locActu || "") + "</td>" +
-        "<td>☐</td>" +
-        "</tr>";
-    }, "<tbody>");
-    asHTML += "</tbody>";
-    document.getElementById('tableData').innerHTML = asHTML;
+    const generateTable = function(currentList) {
+      var asHTML = currentList.reduce(function (acc, currentLine) {
+        return acc +
+          "\n" +
+          "<tr>" +
+          "<td>" + (currentLine["Auteur(s)"] || "") + "</td>" +
+          "<td>" + (currentLine["Titre usuel"] || "") + "</td>" +
+          "<td>" + (currentLine["n° inv."] || "") + "</td>" +
+          "<td>" + (currentLine["mat-sup-tech"] || "") + "</td>" +
+          "<td>" + (currentLine["reserve"] || "") + "</td>" +
+          "<td>" + (currentLine["loc actu"] || "") + "</td>" +
+          "<td>" + (currentLine["emplacement usuel"] || "") + "</td>" +
+          "<td>☐</td>" +
+          "</tr>";
+      }, "<tbody>");
+      asHTML += "</tbody>";
+      return asHTML;
+    }
+    document.getElementById('tableExt').innerHTML = generateTable(finalList.tableExt);
+    document.getElementById('tableR1').innerHTML = generateTable(finalList.tableR1);
+    document.getElementById('tableR2').innerHTML = generateTable(finalList.tableR2);
+    document.getElementById('tableR3').innerHTML = generateTable(finalList.tableR3);
+    document.getElementById('tableR4').innerHTML = generateTable(finalList.tableR4);
+    document.getElementById('tableMultiloc').innerHTML = generateTable(finalList.tableMultiloc);
   }).catch(function (error) {
+    debugger;
     alert(JSON.stringify(error));
   });
 }

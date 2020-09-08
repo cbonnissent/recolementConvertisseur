@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>PPRI</title>
+    <title>Récolement</title>
     <style>
         @media print {
         .noPrint {
@@ -14,28 +14,104 @@
     </style>
 </head>
 <body>
-    <h1 class="noPrint">Convertisseur PPRI</h1>
+    <h1 class="noPrint">Récolement Convertisseur</h1>
     <input class="noPrint" type="file" id="input"/>
-    <h1 class="noPrint">Result</h1>
+    <h1 class="noPrint">Extérieur</h1>
     <table cellpadding="2" cellspacing="2" width="100%" align="center">
         <thead>
             <tr>
                 <th>Auteur</th>
                 <th>Titre</th>
-                <th width="90px">Date</th>
                 <th width="100px">N° inv</th>
-                <th>Priorite</th>
+                <th>mat-sup-tech</th>
                 <th>Reserve</th>
-                <th>Loc.</th>
-                <th>Conditionnement</th>
-                <!--<th>emplacement usuel</th>-->
-                <!--<th class="noPrint">Loc actu</th>-->
                 <th>Loc actu</th>
+                <th>emplacement usuel</th>
                 <th>Pointage</th>
             </tr>
         </thead>
-            <tbody id="tableData"></tbody>
-        </table>
+            <tbody id="tableExt"></tbody>
+    </table>
+    <h1 class="noPrint">R1</h1>
+    <table cellpadding="2" cellspacing="2" width="100%" align="center">
+        <thead>
+            <tr>
+                <th>Auteur</th>
+                <th>Titre</th>
+                <th width="100px">N° inv</th>
+                <th>mat-sup-tech</th>
+                <th>Reserve</th>
+                <th>Loc actu</th>
+                <th>emplacement usuel</th>
+                <th>Pointage</th>
+            </tr>
+        </thead>
+            <tbody id="tableR1"></tbody>
+    </table>
+    <h1 class="noPrint">R2</h1>
+    <table cellpadding="2" cellspacing="2" width="100%" align="center">
+        <thead>
+            <tr>
+                <th>Auteur</th>
+                <th>Titre</th>
+                <th width="100px">N° inv</th>
+                <th>mat-sup-tech</th>
+                <th>Reserve</th>
+                <th>Loc actu</th>
+                <th>emplacement usuel</th>
+                <th>Pointage</th>
+            </tr>
+        </thead>
+            <tbody id="tableR2"></tbody>
+    </table>
+    <h1 class="noPrint">R3</h1>
+    <table cellpadding="2" cellspacing="2" width="100%" align="center">
+        <thead>
+            <tr>
+                <th>Auteur</th>
+                <th>Titre</th>
+                <th width="100px">N° inv</th>
+                <th>mat-sup-tech</th>
+                <th>Reserve</th>
+                <th>Loc actu</th>
+                <th>emplacement usuel</th>
+                <th>Pointage</th>
+            </tr>
+        </thead>
+            <tbody id="tableR3"></tbody>
+    </table>
+    <h1 class="noPrint">R4</h1>
+    <table cellpadding="2" cellspacing="2" width="100%" align="center">
+        <thead>
+            <tr>
+                <th>Auteur</th>
+                <th>Titre</th>
+                <th width="100px">N° inv</th>
+                <th>mat-sup-tech</th>
+                <th>Reserve</th>
+                <th>Loc actu</th>
+                <th>emplacement usuel</th>
+                <th>Pointage</th>
+            </tr>
+        </thead>
+            <tbody id="tableR4"></tbody>
+    </table>
+    <h1 class="noPrint">Multiloc</h1>
+    <table cellpadding="2" cellspacing="2" width="100%" align="center">
+        <thead>
+            <tr>
+                <th>Auteur</th>
+                <th>Titre</th>
+                <th width="100px">N° inv</th>
+                <th>mat-sup-tech</th>
+                <th>Reserve</th>
+                <th>Loc actu</th>
+                <th>emplacement usuel</th>
+                <th>Pointage</th>
+            </tr>
+        </thead>
+            <tbody id="tableMultiloc"></tbody>
+    </table>
     <script src="./deps/papaparse.js"></script>
     <script src="./index.js?ver=4"></script>
 </body>
