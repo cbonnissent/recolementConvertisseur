@@ -105,12 +105,23 @@ function handleFiles() {
       asHTML += "</tbody>";
       return asHTML;
     }
-    document.getElementById('tableExt').innerHTML = generateTable(finalList.tableExt);
-    document.getElementById('tableR1').innerHTML = generateTable(finalList.tableR1);
-    document.getElementById('tableR2').innerHTML = generateTable(finalList.tableR2);
-    document.getElementById('tableR3').innerHTML = generateTable(finalList.tableR3);
-    document.getElementById('tableR4').innerHTML = generateTable(finalList.tableR4);
-    document.getElementById('tableMultiloc').innerHTML = generateTable(finalList.tableMultiloc);
+    var orderElement = function (first, second) {
+      var reserveFirst = (first["loc actu"] ? first["loc actu"].toUpperCase() : "ø")+""+(first["Auteur(s)"] ? first["Auteur(s)"].toUpperCase() : "ø");
+      var reserveSecond = (second["loc actu"] ? second["loc actu"].toUpperCase() : "ø")+""+(second["Auteur(s)"] ? second["Auteur(s)"].toUpperCase() : "ø");
+      if (reserveFirst > reserveSecond) {
+        return 1;
+      }
+      if (reserveFirst < reserveSecond) {
+        return -1;
+      }
+      return 0;
+    };
+    document.getElementById('tableExt').innerHTML = generateTable(finalList.tableExt.sort(orderElement));
+    document.getElementById('tableR1').innerHTML = generateTable(finalList.tableR1.sort(orderElement));
+    document.getElementById('tableR2').innerHTML = generateTable(finalList.tableR2.sort(orderElement));
+    document.getElementById('tableR3').innerHTML = generateTable(finalList.tableR3.sort(orderElement));
+    document.getElementById('tableR4').innerHTML = generateTable(finalList.tableR4.sort(orderElement));
+    document.getElementById('tableMultiloc').innerHTML = generateTable(finalList.tableMultiloc.sort(orderElement));
   }).catch(function (error) {
     debugger;
     alert(JSON.stringify(error));
